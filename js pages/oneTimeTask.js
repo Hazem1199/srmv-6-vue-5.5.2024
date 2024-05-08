@@ -1,6 +1,10 @@
 // Correct import of Composition API functions
 const { createApp, ref, reactive, onMounted, computed } = Vue;
 
+import Sidbar from "../componant/sidbar.js";
+
+
+
 // Define Vue component using Composition API
 const App = {
   setup() {
@@ -10,6 +14,7 @@ const App = {
       projects: [],
       status: [],
       emps: [],
+      user: localStorage.getItem("myCode"),
     });
 
     const formValue = reactive({
@@ -101,52 +106,60 @@ const App = {
     // Call the fetchtasks function on component mount
     onMounted(fetchTasks);
 
-    // Function to delete a task
-    const deletetask = async (id) => {
-      const confirmed = confirm("Are you sure you want to delete this task? ");
-
-      if (confirmed) {
-        const baseUrl = `https://srm-vbc7.onrender.com/api/onetasks/${id}`;
-        const token =
-          "f2004377863e9d767b12ed40b2a996ff71343b463323b990160adf52f660493e20e77b5f368d4f510a3f9a0ccb3bb2cbed5b8c8a6800c63d768eed032bf0eeeb030cfab84d2167ca498673aeb6528147a103989c27e944e87768be0b2b6c65f5f8ad994a831150e8bce9bbf650261d17cf5f5db8e03182ea2faec183d1ec11de";
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await fetch(baseUrl, {
-          method: "DELETE",
-          headers,
-        });
-        const deletedtask = await response.json();
-        console.log(deletedtask);
-        // const url2 = `https://srm-vbc7.onrender.com/api/taskhistories`;
-
-        // const user = localStorage.getItem("myCode");
-
-        // await fetch(url2, {
-        //   method: "POST",
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     data: {
-        //       name: deletedtask.data.attributes.name,
-        //       description: deletedtask.data.attributes.description,
-        //       deleteby: user,
-        //       status: deletedtask.data.attributes.status,
-        //     },
-        //   }),
-        // });
-
-        await fetchTasks();
-      }
-    };
-
     const spinnerShow = ref(false);
     const advancedSettingShow = ref(false);
     const successMsg = ref(false);
     const errorMsg = ref(false);
     const modalShow = ref(false);
+    const spinnerShowIds = ref({});
+    const trashShow = ref({});
+
+    // Function to delete a task
+    const archivetask = async (id) => {
+      const confirmed = confirm("Are you sure you want to archive this task? ");
+
+      if (!confirmed) {
+        trashShow.value[id] = true;
+        spinnerShowIds.value[id] = false;
+        return;
+      }
+
+      if (confirmed) {
+        spinnerShowIds.value[id] = true;
+        const baseUrl = `https://srm-vbc7.onrender.com/api/onetasks/${id}`;
+        const token =
+          "f2004377863e9d767b12ed40b2a996ff71343b463323b990160adf52f660493e20e77b5f368d4f510a3f9a0ccb3bb2cbed5b8c8a6800c63d768eed032bf0eeeb030cfab84d2167ca498673aeb6528147a103989c27e944e87768be0b2b6c65f5f8ad994a831150e8bce9bbf650261d17cf5f5db8e03182ea2faec183d1ec11de";
+        // const headers = {
+        //   Authorization: `Bearer ${token}`,
+        //   "Content-Type": "application/json",
+        // };
+        // const response = await fetch(baseUrl, {
+        //   method: "PUT",
+        //   headers,
+        // });
+        // const deletedtask = await response.json();
+        // console.log(deletedtask);
+        // const url2 = `https://srm-vbc7.onrender.com/api/taskhistories`;
+
+        // const user = localStorage.getItem("myCode");
+
+        await fetch(baseUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              is_archive: true,
+            },
+          }),
+        });
+        spinnerShowIds.value[id] = false;
+
+        await fetchTasks();
+      }
+    };
 
     // // Function to create a new task
 
@@ -178,7 +191,7 @@ const App = {
           data: {
             name: formValue.name,
             description: formValue.description,
-            emp: user,
+            taskOwner: user,
             project: formValue.project,
             // status: "open",
             // taskType: taskList,
@@ -482,10 +495,17 @@ const App = {
       modalShow,
       formvalid,
       fetchEmps,
-      deletetask,
+      spinnerShowIds,
+      trashShow,
+      archivetask,
     };
+  },
+  components: {
+    Sidbar,
   },
 };
 
+
 // Register the component with Vue
 createApp(App).mount("#app");
+

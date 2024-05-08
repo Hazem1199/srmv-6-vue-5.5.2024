@@ -40,7 +40,7 @@
 
 
             function getInitialData() {
-                fetch('https://srm-vbc7.onrender.com/api/emps?populate=*', {
+                fetch('https://srm-vbc7.onrender.com/api/emps', {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + 'f2004377863e9d767b12ed40b2a996ff71343b463323b990160adf52f660493e20e77b5f368d4f510a3f9a0ccb3bb2cbed5b8c8a6800c63d768eed032bf0eeeb030cfab84d2167ca498673aeb6528147a103989c27e944e87768be0b2b6c65f5f8ad994a831150e8bce9bbf650261d17cf5f5db8e03182ea2faec183d1ec11de'
@@ -62,7 +62,7 @@
                             // افحص هنا إذا كانت اسم المستخدم وكلمة المرور صحيحة
                             if (username === usernameinput && password === passwordinput) {
                                 // قم بتوجيه المستخدم إلى الصفحة التالية
-                                
+
                                 const saveuser = localStorage.setItem('username', username);
                                 const savecode = localStorage.setItem('myCode', code);
                                 const savedepartment = localStorage.setItem('myDepartment', department);
@@ -88,7 +88,7 @@
             //             'Authorization': 'Bearer ' + 'd937ae1e244406e4bed3be73d77aa35d540bf5b44afe795fc593671ea28056237ff9f2ff52d651756f1e2f84128bb6bdcfaf9914821e20c013067d10f1dc68f56b8cb1bc0d93b2967197ee74a03b873e89492b817e01cfa242a44a5b84faa8b6a6f1662633a44216b9a199a8f2e03920e1560d5ccfdca0e52ad62ce22f09912d'
             //         },
 
-                    // body: JSON.stringify({ username: username, password: password })
+            // body: JSON.stringify({ username: username, password: password })
             //     })
             //         .then(response => response.json())
             //         .then(data => {
@@ -104,8 +104,8 @@
             //             console.error('حدث خطأ أثناء الاتصال بالخادم: ', error);
             //         });
         }
-        
-          function preventBack() {
+
+        function preventBack() {
             window.history.forward();
         }
         setTimeout("preventBack()", 0);
